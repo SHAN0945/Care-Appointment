@@ -9,7 +9,15 @@ type Role = "PATIENT" | "DOCTOR" | "ADMIN";
 
 const THEME: Record<
   Role,
-  { label: string; home: string; accent: string; ring: string; icon: string; blurb: string }
+  {
+    label: string;
+    home: string;
+    accent: string;
+    ring: string;
+    icon: string;
+    blurb: string;
+    demo?: { email: string; password: string };
+  }
 > = {
   PATIENT: {
     label: "Patient Portal",
@@ -26,6 +34,7 @@ const THEME: Record<
     ring: "focus:border-blue-500 focus:ring-blue-500",
     icon: "👩‍⚕️",
     blurb: "Review AI pre-visit summaries and manage your patients.",
+    demo: { email: "priya.sharma@clinic.test", password: "QWERTY11" },
   },
   ADMIN: {
     label: "Admin Portal",
@@ -34,6 +43,7 @@ const THEME: Record<
     ring: "focus:border-violet-500 focus:ring-violet-500",
     icon: "🗂️",
     blurb: "Manage doctors, working hours, and clinic-wide leave.",
+    demo: { email: "admin@clinic.test", password: "QWERTY11" },
   },
 };
 
@@ -92,6 +102,29 @@ function Form({ role }: { role: Role }) {
           </span>
         </div>
 
+        {theme.demo && (
+          <div className="mb-4 rounded-lg border border-dashed border-gray-300 bg-white p-3 text-sm dark:border-gray-700 dark:bg-gray-900">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <p className="font-medium text-gray-900 dark:text-gray-100">Demo {theme.label.replace(" Portal", "").toLowerCase()} login</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  {theme.demo.email} · {theme.demo.password}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail(theme.demo!.email);
+                  setPassword(theme.demo!.password);
+                }}
+                className="shrink-0 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+              >
+                Use this
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
           <h1 className="mb-1 text-xl font-semibold text-gray-900 dark:text-gray-50">Sign in</h1>
           <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">{theme.blurb}</p>
@@ -137,6 +170,15 @@ function Form({ role }: { role: Role }) {
             New here?{" "}
             <a href="/register" className="font-medium text-emerald-700 hover:underline dark:text-emerald-400">
               Create a patient account
+            </a>
+          </p>
+        )}
+
+        {role === "DOCTOR" && (
+          <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+            New here?{" "}
+            <a href="/register/doctor" className="font-medium text-blue-700 hover:underline dark:text-blue-400">
+              Register as a doctor
             </a>
           </p>
         )}

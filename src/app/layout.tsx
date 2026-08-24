@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -42,9 +41,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <Script id="theme-init" strategy="beforeInteractive">
-          {THEME_INIT_SCRIPT}
-        </Script>
+        {/* Plain inline script (not next/script) — this needs to run
+            synchronously before first paint, and next/script's
+            strategy="beforeInteractive" renders through a client-side
+            component wrapper that triggers React's "script tag inside a
+            React component" warning in this Next version. A raw script tag
+            in a Server Component is just static HTML the browser parses and
+            runs immediately, with no such wrapper involved. */}
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         {children}
       </body>
     </html>
