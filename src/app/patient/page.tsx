@@ -11,6 +11,7 @@ const STATUS_STYLES: Record<string, string> = {
 
 const QUICK_ACTIONS = [
   { href: "/patient/book", icon: "🔍", label: "Find a doctor", body: "Search by specialty and book instantly" },
+  { href: "/patient/symptom-checker", icon: "🩺", label: "Symptom Checker", body: "Get an instant self-check before you book" },
   { href: "/patient/appointments", icon: "📅", label: "My appointments", body: "View history and visit summaries" },
   { href: "/patient/settings", icon: "📆", label: "Calendar sync", body: "Connect Google Calendar" },
 ];
@@ -88,10 +89,16 @@ export default async function PatientDashboard() {
         >
           View all appointments{upcomingCount > 0 ? ` (${upcomingCount} upcoming)` : ""}
         </a>
+        <a
+          href="/patient/symptom-checker"
+          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+        >
+          🩺 Check my symptoms
+        </a>
       </div>
 
       <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">Quick links</p>
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {QUICK_ACTIONS.map((a) => (
           <a
             key={a.href}
