@@ -3,6 +3,7 @@
 A clinic appointment platform with separate patient, doctor, and admin portals: symptom intake with AI pre-visit summaries, post-visit AI patient summaries, medication reminders, email notifications, and Google Calendar sync.
 
 **Live app:** https://healthcare-appointment-manager-three.vercel.app
+
 **System design write-up:** [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) — double-booking prevention, slot hold mechanism, doctor leave conflict handling, notification failure handling.
 **Build log / phase-by-phase status:** [PROGRESS.md](PROGRESS.md)
 
