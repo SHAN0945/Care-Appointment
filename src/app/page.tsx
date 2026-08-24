@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { LandingHeader } from "@/components/landing/landing-header";
@@ -57,9 +56,12 @@ const FEATURES = [
 
 export default async function Home() {
   const session = await auth();
-  if (session?.user?.role) {
-    redirect(ROLE_HOME[session.user.role] ?? "/login");
-  }
+  // Behave like a normal marketing site: "/" always shows the landing page,
+  // logged in or not — no forced redirect away from it. A logged-in visitor
+  // just gets a "Go to Dashboard" CTA instead of "Sign in"/"Get Started"
+  // (see LandingHeader and the hero CTA below), and their session is left
+  // untouched either way.
+  const dashboardHref = session?.user?.role ? ROLE_HOME[session.user.role] : null;
 
   const [doctorsRaw, appointmentCount] = await Promise.all([
     prisma.doctorProfile.findMany({
@@ -90,7 +92,7 @@ export default async function Home() {
 
   return (
     <div className="bg-white dark:bg-gray-950">
-      <LandingHeader />
+      <LandingHeader dashboardHref={dashboardHref} />
 
       {/* ── Hero ──────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
@@ -118,10 +120,10 @@ export default async function Home() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href="/register"
+                href={dashboardHref ?? "/register"}
                 className="rounded-md bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-blue-700"
               >
-                Book your first appointment
+                {dashboardHref ? "Go to Dashboard" : "Book your first appointment"}
               </a>
               <a
                 href="#how-it-works"
@@ -277,28 +279,45 @@ export default async function Home() {
       {/* ── CTA ──────────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-6xl px-6 py-20">
         <div className="rounded-2xl bg-blue-600 px-8 py-14 text-center shadow-lg sm:px-16">
-          <h2 className="text-3xl font-bold text-white">Ready when you are.</h2>
-          <p className="mx-auto mt-3 max-w-xl text-blue-100">
-            Create a free patient account and book your first appointment in under two minutes.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a
-              href="/register"
-              className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-blue-700 shadow-sm transition-transform hover:-translate-y-0.5"
-            >
-              Get started free
-            </a>
-            <a
-              href="/login/doctor"
-              className="rounded-md border border-blue-300 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
-            >
-              I'm a doctor
-            </a>
-          </div>
+          {dashboardHref ? (
+            <>
+              <h2 className="text-3xl font-bold text-white">Welcome back.</h2>
+              <p className="mx-auto mt-3 max-w-xl text-blue-100">Pick up right where you left off.</p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <a
+                  href={dashboardHref}
+                  className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-blue-700 shadow-sm transition-transform hover:-translate-y-0.5"
+                >
+                  Go to Dashboard
+                </a>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-3xl font-bold text-white">Ready when you are.</h2>
+              <p className="mx-auto mt-3 max-w-xl text-blue-100">
+                Create a free patient account and book your first appointment in under two minutes.
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <a
+                  href="/register"
+                  className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-blue-700 shadow-sm transition-transform hover:-translate-y-0.5"
+                >
+                  Get started free
+                </a>
+                <a
+                  href="/login/doctor"
+                  className="rounded-md border border-blue-300 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
+                >
+                  I&apos;m a doctor
+                </a>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
-      <LandingFooter />
+      <LandingFooter dashboardHref={dashboardHref} />
     </div>
   );
 }

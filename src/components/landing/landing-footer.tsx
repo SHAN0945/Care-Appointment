@@ -1,4 +1,4 @@
-export function LandingFooter() {
+export function LandingFooter({ dashboardHref }: { dashboardHref?: string | null }) {
   return (
     <footer className="border-t border-gray-100 bg-white dark:border-gray-800 dark:bg-gray-950">
       <div className="mx-auto max-w-6xl px-6 py-12">
@@ -18,10 +18,16 @@ export function LandingFooter() {
           <div>
             <p className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Portals</p>
             <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-              <li><a href="/login/patient" className="hover:text-gray-800 dark:hover:text-gray-200">Patient sign in</a></li>
-              <li><a href="/login/doctor" className="hover:text-gray-800 dark:hover:text-gray-200">Doctor sign in</a></li>
-              <li><a href="/login/admin" className="hover:text-gray-800 dark:hover:text-gray-200">Admin sign in</a></li>
-              <li><a href="/register" className="hover:text-gray-800 dark:hover:text-gray-200">Create a patient account</a></li>
+              {dashboardHref ? (
+                <li><a href={dashboardHref} className="hover:text-gray-800 dark:hover:text-gray-200">Go to Dashboard</a></li>
+              ) : (
+                <>
+                  <li><a href="/login/patient" className="hover:text-gray-800 dark:hover:text-gray-200">Patient sign in</a></li>
+                  <li><a href="/login/doctor" className="hover:text-gray-800 dark:hover:text-gray-200">Doctor sign in</a></li>
+                  <li><a href="/login/admin" className="hover:text-gray-800 dark:hover:text-gray-200">Admin sign in</a></li>
+                  <li><a href="/register" className="hover:text-gray-800 dark:hover:text-gray-200">Create a patient account</a></li>
+                </>
+              )}
             </ul>
           </div>
 
