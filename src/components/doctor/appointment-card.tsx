@@ -23,7 +23,7 @@ type VisitNotes = {
 
 function SourceBadge({ source }: { source: string | null }) {
   if (source === "LLM") {
-    return <span className="text-xs font-normal text-purple-600 dark:text-purple-400">✨ Claude AI</span>;
+    return <span className="text-xs font-normal text-purple-600 dark:text-purple-400">✨ AI-generated</span>;
   }
   if (source === "LOCAL") {
     return <span className="text-xs font-normal text-gray-500 dark:text-gray-400">🤖 Local triage engine</span>;

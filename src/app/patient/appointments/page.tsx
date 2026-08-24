@@ -13,7 +13,15 @@ export default async function PatientAppointmentsPage() {
         where: { patientId },
         include: {
           doctor: { select: { specialization: true, user: { select: { name: true } } } },
-          symptomForm: { select: { aiUrgency: true, aiSummaryFailed: true, aiSource: true } },
+          symptomForm: {
+            select: {
+              aiUrgency: true,
+              aiChiefComplaint: true,
+              aiSuggestedQuestions: true,
+              aiSummaryFailed: true,
+              aiSource: true,
+            },
+          },
           visitNotes: { select: { aiPatientSummary: true, aiSummaryFailed: true, aiSource: true } },
         },
         orderBy: { slotStart: "desc" },
@@ -26,6 +34,9 @@ export default async function PatientAppointmentsPage() {
         appointments={appointments.map((a) => ({
           ...a,
           slotStart: a.slotStart.toISOString(),
+          symptomForm: a.symptomForm
+            ? { ...a.symptomForm, aiSuggestedQuestions: a.symptomForm.aiSuggestedQuestions as string[] | null }
+            : null,
         }))}
       />
     </AppShell>

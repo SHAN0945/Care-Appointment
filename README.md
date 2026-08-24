@@ -32,7 +32,7 @@ Every page supports light and dark mode — toggle in the header, or a full Ligh
 - **Framework:** Next.js 16 (App Router), TypeScript
 - **Database:** PostgreSQL (Neon), via Prisma ORM
 - **Auth:** NextAuth.js (Auth.js) v5, credentials provider, role-based (patient / doctor / admin)
-- **LLM:** Anthropic Claude API — pre-visit and post-visit summaries (degrades gracefully if unset, see below)
+- **LLM:** Anthropic Claude API or Google Gemini API — pre-visit/post-visit summaries and the standalone symptom checker (degrades gracefully if neither is set, see below)
 - **Email:** Resend
 - **Calendar:** Google Calendar API (OAuth 2.0)
 - **Background jobs:** Vercel Cron, hitting 4 dedicated API routes
@@ -71,7 +71,7 @@ Full list with explanations in [.env.example](.env.example). Summary:
 | `DATABASE_URL` / `DIRECT_URL` | Everything (Neon Postgres) | App won't start |
 | `NEXTAUTH_SECRET` / `NEXTAUTH_URL` | Auth sessions | App won't start |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | `prisma db seed` only | Seed uses a dev-only default |
-| `ANTHROPIC_API_KEY` | Using the real LLM for pre/post-visit summaries | Falls back to the local rule-based triage/prescription engine (see below) — booking/visit flows and medication reminders all still work, just tagged `aiSource: "LOCAL"` instead of `"LLM"` |
+| `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` | Using a real LLM for pre/post-visit summaries and the symptom checker (Anthropic takes priority if both are set) | Falls back to the local rule-based/knowledge-base engines (see below) — booking/visit flows, the symptom checker, and medication reminders all still work, just tagged `aiSource: "LOCAL"` instead of `"LLM"` |
 | `RESEND_API_KEY` / `EMAIL_FROM` | Sending real emails | Notification rows are queued and marked `FAILED` with the exact reason; nothing crashes |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google Calendar sync | "Connect Google Calendar" hides itself (`isGoogleConfigured()`); calendar notification rows no-op |
 | `CRON_SECRET` | Protecting the 4 cron routes | Routes stay callable but log a warning — set this before deploying |
@@ -115,16 +115,21 @@ Exact wording used in `src/lib/llm.ts` (verbatim from the brief's LLM Usage Guid
 >
 > For each medication, also give a normalized reminder interval in hours (e.g. "twice daily" -> 12, "every 8 hours" -> 8, "once daily" -> 24) and, if a course length is mentioned, its duration in days."
 
-Both calls use `messages.parse()` with a Zod schema (`zodOutputFormat`) — no manual JSON parsing or regex extraction.
+Both calls use `messages.parse()` with a Zod schema (`zodOutputFormat`) when running on Anthropic, or a hand-written Gemini `responseSchema` (still validated against the same Zod schema afterward) when running on Gemini — no manual JSON parsing or regex extraction either way.
 
-### Local fallback engine (no API key required)
+### Symptom Checker (standalone, patient-facing)
 
-When `ANTHROPIC_API_KEY` is unset, `src/lib/llm.ts` doesn't just fail — it falls back to a **local, rule-based engine** that produces the same shape of output with no network call and no training data:
+Separate from the booking flow's pre-visit triage, `/patient/symptom-checker` is a self-serve "what might this be" tool: a patient describes symptoms (or taps quick-add chips grouped by category), and gets back up to 5 possible conditions with an urgency level, plain-language explanation, and recommended next step — always with a prominent "not a medical diagnosis" disclaimer and a straight line to book an appointment. Same `generateSymptomCheck()` LLM-or-local pattern as the other two calls; see below for what backs the local path.
+
+### Local fallback engines (no API key required)
+
+When neither `ANTHROPIC_API_KEY` nor `GEMINI_API_KEY` is set, `src/lib/llm.ts` doesn't just fail — every one of the three calls above falls back to a **local, rule-based engine** that produces the same shape of output with no network call and no training data:
 
 - **Pre-visit** — `src/lib/symptom-triage.ts`: ~50 hand-built symptom rules (cardiac, respiratory, neurological, GI, mental health, obstetric, pediatric, etc.), each with a baseline urgency and its own follow-up questions. A small set of rules are marked as **red flags** (chest pain, stroke signs, anaphylaxis, active suicidal ideation, severe bleeding, sudden vision loss, …) that force `High` urgency regardless of anything else matched, mirroring how real triage protocols like the Manchester Triage System or the Emergency Severity Index actually work — a decision list, not a black box. Intensifier words ("severe", "sudden", "worst") bump non-red-flag matches up a level.
 - **Post-visit** — `src/lib/prescription-parser.ts`: regex-based extraction of medication name/dosage/frequency/duration from free-text prescriptions (handles `mg`/`mcg`/`ml`, "twice daily"/"BID"/"every 8 hours" style frequency phrasing, "for N days/weeks" duration), producing the same normalized `intervalHours` the medication-reminder scheduler needs.
+- **Symptom checker** — `src/lib/symptom-database.ts` + `src/lib/symptom-checker.ts`: a curated, hand-authored knowledge base of 300+ common symptom phrases across 14 categories, mapped onto 68 common conditions (each with its own baseline urgency, description, and advice — including red-flag emergencies like stroke, anaphylaxis, appendicitis, and sepsis). Matching is plain keyword/overlap scoring against the patient's free text — not a trained classifier.
 
-Every `SymptomForm`/`VisitNotes` row records which engine actually produced it via `aiSource: "LLM" | "LOCAL"`, and both the doctor and patient UI show a small badge (✨ Claude AI / 🤖 Local triage engine) rather than presenting a rule-based result as if it came from the LLM. Set `ANTHROPIC_API_KEY` and the real LLM path takes over automatically — nothing else changes. See [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md#notification-failure-handling) for how a real LLM failure (as opposed to a missing key) is still handled without breaking booking/visit flows.
+Every `SymptomForm`/`VisitNotes` row (and every symptom-checker response) records which engine actually produced it via `aiSource`/`source: "LLM" | "LOCAL"`, and the UI shows a small badge (✨ AI-generated / 🤖 Local triage engine or knowledge base) rather than presenting a rule-based result as if it came from a live model. Set either `ANTHROPIC_API_KEY` or `GEMINI_API_KEY` and the real LLM path takes over automatically for all three features — nothing else changes. See [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md#notification-failure-handling) for how a real LLM failure (as opposed to a missing key) is still handled without breaking booking/visit flows.
 
 ## API reference
 
@@ -144,6 +149,8 @@ All routes are under `/api`. Page-level access is also gated by role in `src/pro
 - `POST /api/patient/appointments/:id/confirm` — submit symptoms (`{symptoms}`), runs the pre-visit LLM call, flips to `CONFIRMED`, queues booking-confirmation notifications
 - `POST /api/patient/appointments/:id/cancel` — cancel a `PENDING`/`CONFIRMED` appointment; queues cancellation notifications only if it was `CONFIRMED`
 - `GET /api/patient/appointments/:id/ics` — download a universal calendar file for a `CONFIRMED`/`COMPLETED` appointment (see "Universal calendar export" below); `409` otherwise
+
+- `POST /api/patient/symptom-checker` — standalone self-check (`{symptoms}`), runs `generateSymptomCheck()`; returns up to 5 possible conditions, an overall urgency, a disclaimer, and the recognized-symptom keywords — nothing persisted, stateless
 
 **Doctor**
 - `GET /api/doctor/appointments` — the signed-in doctor's `CONFIRMED`/`COMPLETED` appointments
@@ -172,7 +179,7 @@ All routes are under `/api`. Page-level access is also gated by role in `src/pro
 
 ## Dependency footprint
 
-11 runtime dependencies, all directly load-bearing for a requirement in the brief — auth (`next-auth`), ORM (`prisma`/`@prisma/client`), password hashing (`bcryptjs`), the LLM (`@anthropic-ai/sdk`), email (`resend`), Google Calendar (`googleapis`), and validation (`zod`). Nothing decorative was added on top: the calendar export (`.ics`), the local symptom-triage/prescription-parsing fallback engine, and date formatting are all hand-rolled in plain TypeScript rather than reached for as libraries — `@auth/prisma-adapter` (never actually wired up — the credentials provider doesn't use it) and `date-fns` (pulled in for exactly two one-line functions) were removed during a pass specifically to trim anything not earning its place; see `src/lib/date-utils.ts` for the native replacements.
+11 runtime dependencies, all directly load-bearing for a requirement in the brief — auth (`next-auth`), ORM (`prisma`/`@prisma/client`), password hashing (`bcryptjs`), the LLM (`@anthropic-ai/sdk`), email (`resend`), Google Calendar (`googleapis`), and validation (`zod`). Nothing decorative was added on top: the calendar export (`.ics`), the local symptom-triage/prescription-parsing/symptom-checker fallback engines, and date formatting are all hand-rolled in plain TypeScript rather than reached for as libraries — `@auth/prisma-adapter` (never actually wired up — the credentials provider doesn't use it) and `date-fns` (pulled in for exactly two one-line functions) were removed during a pass specifically to trim anything not earning its place; see `src/lib/date-utils.ts` for the native replacements. Gemini support (an alternative to Anthropic when only a `GEMINI_API_KEY` is available) is a ~20-line `fetch()` call against Gemini's REST API in `src/lib/llm.ts` rather than the `@google/generative-ai` SDK — one more dependency avoided for something that's just a JSON POST.
 
 ## Known limitations
 

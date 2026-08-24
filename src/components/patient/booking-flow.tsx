@@ -18,6 +18,26 @@ type Doctor = {
 
 type Slot = { start: string; end: string };
 
+type SymptomAnalysis = {
+  aiUrgency: string | null;
+  aiChiefComplaint: string | null;
+  aiSuggestedQuestions: string[] | null;
+  aiSummaryFailed: boolean;
+  aiSource: string | null;
+};
+
+const URGENCY_STYLES: Record<string, string> = {
+  LOW: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
+  MEDIUM: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  HIGH: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300",
+};
+
+function sourceLabel(source: string | null): string | null {
+  if (source === "LLM") return "✨ AI-generated";
+  if (source === "LOCAL") return "🤖 Local triage engine";
+  return null;
+}
+
 const STEPS = [
   { label: "Doctor", icon: "1" },
   { label: "Date & Time", icon: "2" },
@@ -73,6 +93,7 @@ export function BookingFlow({ initialDoctors }: { initialDoctors: Doctor[] }) {
   const [holdSlot, setHoldSlot] = useState<Slot | null>(null);
   const [holdExpiresAt, setHoldExpiresAt] = useState<number | null>(null);
   const [symptoms, setSymptoms] = useState("");
+  const [symptomAnalysis, setSymptomAnalysis] = useState<SymptomAnalysis | null>(null);
   const [step, setStep] = useState<"search" | "slots" | "symptoms" | "done">("search");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -163,6 +184,8 @@ export function BookingFlow({ initialDoctors }: { initialDoctors: Doctor[] }) {
       setError(data.error ?? "Failed to confirm booking");
       return;
     }
+    const data = await res.json();
+    setSymptomAnalysis(data.symptomForm ?? null);
     setStep("done");
   }
 
@@ -183,6 +206,51 @@ export function BookingFlow({ initialDoctors }: { initialDoctors: Doctor[] }) {
           <p className="mt-1 text-sm text-gray-400 dark:text-gray-500">
             A confirmation email is on its way, and your calendar will sync automatically.
           </p>
+
+          {symptomAnalysis && (
+            <div className="mx-auto mt-6 max-w-lg rounded-lg border border-gray-200 bg-gray-50 p-4 text-left text-sm dark:border-gray-800 dark:bg-gray-800">
+              <div className="mb-2 flex items-center justify-between">
+                <p className="font-medium text-gray-900 dark:text-gray-100">Symptom analysis</p>
+                {!symptomAnalysis.aiSummaryFailed && sourceLabel(symptomAnalysis.aiSource) && (
+                  <span className="text-xs text-gray-400 dark:text-gray-500">{sourceLabel(symptomAnalysis.aiSource)}</span>
+                )}
+              </div>
+              {symptomAnalysis.aiSummaryFailed ? (
+                <p className="text-gray-500 dark:text-gray-400">
+                  Analysis unavailable — your symptoms were still recorded and your doctor can see them.
+                </p>
+              ) : (
+                <>
+                  <span
+                    className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      URGENCY_STYLES[symptomAnalysis.aiUrgency ?? ""] ?? "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    {symptomAnalysis.aiUrgency ?? "—"} urgency
+                  </span>
+                  {symptomAnalysis.aiChiefComplaint && (
+                    <p className="mt-2 text-gray-700 dark:text-gray-300">
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Chief complaint:</span>{" "}
+                      {symptomAnalysis.aiChiefComplaint}
+                    </p>
+                  )}
+                  {symptomAnalysis.aiSuggestedQuestions && symptomAnalysis.aiSuggestedQuestions.length > 0 && (
+                    <>
+                      <p className="mt-3 text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
+                        Consider asking your doctor
+                      </p>
+                      <ul className="list-disc pl-5 text-gray-600 dark:text-gray-400">
+                        {symptomAnalysis.aiSuggestedQuestions.map((q, i) => (
+                          <li key={i}>{q}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
           <button
             onClick={() => router.push("/patient")}
             className="mt-6 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700"

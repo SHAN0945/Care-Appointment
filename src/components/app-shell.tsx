@@ -14,6 +14,7 @@ const NAV_ITEMS: Record<"ADMIN" | "DOCTOR" | "PATIENT", NavItem[]> = {
     { href: "/patient", label: "Dashboard", icon: "🏠" },
     { href: "/patient/book", label: "Find Doctor", icon: "🔍" },
     { href: "/patient/appointments", label: "Appointments", icon: "📅" },
+    { href: "/patient/symptom-checker", label: "Symptom Checker", icon: "🩺" },
     { href: "/patient/profile", label: "Profile", icon: "👤" },
     { href: "/patient/settings", label: "Settings", icon: "⚙️" },
   ],
