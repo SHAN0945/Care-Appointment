@@ -1,0 +1,260 @@
+// Healthcare Appointment & Follow-up Manager — Prisma schema
+// See README.md for full schema notes and design rationale.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────
+
+enum Role {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+enum AppointmentStatus {
+  PENDING // slot held, awaiting confirmation (short-lived hold)
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum Urgency {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum NotificationType {
+  EMAIL
+  CALENDAR
+}
+
+enum NotificationEvent {
+  BOOKING_CONFIRMATION
+  APPOINTMENT_REMINDER
+  CANCELLATION
+  LEAVE_CONFLICT
+  MEDICATION_REMINDER
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  RETRYING
+  ABANDONED // exceeded max retry attempts
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Core identity
+// ─────────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  doctorProfile  DoctorProfile?
+  patientProfile PatientProfile?
+
+  googleCalendarToken GoogleCalendarToken?
+
+  @@index([role])
+}
+
+model DoctorProfile {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization      String
+  bio                 String?
+  // e.g. { "mon": ["09:00","17:00"], "tue": ["09:00","17:00"], ... } — closed days omitted
+  workingHours        Json
+  slotDurationMinutes Int      @default(30)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  leaves       Leave[]
+  appointments Appointment[]
+
+  @@index([specialization])
+}
+
+model PatientProfile {
+  id        String    @id @default(cuid())
+  userId    String    @unique
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dob       DateTime?
+  phone     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  appointments Appointment[]
+}
+
+model Leave {
+  id        String        @id @default(cuid())
+  doctorId  String
+  doctor    DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  date      DateTime // stored as date-only (midnight UTC) for the day off
+  reason    String?
+  createdAt DateTime      @default(now())
+
+  @@unique([doctorId, date])
+  @@index([doctorId, date])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Appointments
+// ─────────────────────────────────────────────────────────────────────────
+
+model Appointment {
+  id        String         @id @default(cuid())
+  doctorId  String
+  doctor    DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patientId String
+  patient   PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  slotStart DateTime
+  slotEnd   DateTime
+  status    AppointmentStatus @default(PENDING)
+
+  // Short-lived hold expiry for PENDING appointments; a cron sweeps expired
+  // holds back to CANCELLED so the slot becomes bookable again.
+  holdExpiresAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  symptomForm         SymptomForm?
+  visitNotes          VisitNotes?
+  notifications       NotificationLog[]
+  medicationReminders MedicationReminder[]
+
+  // The core double-booking guard is a PARTIAL unique index on
+  // (doctorId, slotStart) WHERE status IN ('PENDING','CONFIRMED') — added by
+  // hand in the migration SQL (see migrations/*_partial_unique_active_slot),
+  // since Prisma's schema DSL can't express a filtered unique index. A plain
+  // `@@unique` here would be wrong: it would permanently lock a slot even
+  // after cancellation, blocking re-booking forever. The booking API relies
+  // on this index + a unique-violation catch as the single source of truth
+  // for conflicts (not client-side checks) — see the write-up.
+  @@index([doctorId, slotStart])
+  @@index([patientId])
+  @@index([doctorId, slotStart, status])
+}
+
+model SymptomForm {
+  id            String      @id @default(cuid())
+  appointmentId String      @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+  symptoms String
+
+  // AI-generated pre-visit summary. Nullable + failure flag so a failed LLM
+  // call never blocks the booking/visit flow (see LLM Usage Guidance).
+  aiUrgency            Urgency?
+  aiChiefComplaint     String?
+  aiSuggestedQuestions Json? // string[]
+  aiSummaryFailed      Boolean  @default(false)
+  aiSummaryError       String?
+  // Which engine actually produced the summary: "LLM" (Anthropic) or
+  // "LOCAL" (the rule-based fallback used when no API key is configured —
+  // see src/lib/symptom-triage.ts). Null on rows predating this column.
+  aiSource             String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VisitNotes {
+  id            String      @id @default(cuid())
+  appointmentId String      @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+  doctorNotes  String
+  prescription String // free-text; parsed into MedicationReminder rows
+
+  // AI-generated patient-friendly summary
+  aiPatientSummary String?
+  aiSummaryFailed  Boolean @default(false)
+  aiSummaryError   String?
+  // "LLM" or "LOCAL" — see the matching field on SymptomForm.
+  aiSource         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  medicationReminders MedicationReminder[]
+}
+
+model MedicationReminder {
+  id            String      @id @default(cuid())
+  appointmentId String
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  visitNotesId  String
+  visitNotes    VisitNotes  @relation(fields: [visitNotesId], references: [id], onDelete: Cascade)
+
+  medicationName String
+  dosage         String?
+  frequency      String // e.g. "twice daily", "every 8 hours" — human text kept alongside the schedule
+  intervalHours  Int // parsed cadence used to compute nextSendAt
+  remindersLeft  Int      @default(1)
+  nextSendAt     DateTime
+  sent           Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@index([nextSendAt, sent])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Notifications
+// ─────────────────────────────────────────────────────────────────────────
+
+model NotificationLog {
+  id            String       @id @default(cuid())
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  recipientId   String // User.id (patient or doctor)
+
+  type      NotificationType
+  event     NotificationEvent
+  status    NotificationStatus @default(PENDING)
+  attempts  Int                @default(0)
+  lastError String?
+
+  // Google Calendar events keep the external event id so it can be updated/deleted.
+  externalEventId String?
+
+  payload   Json? // rendered subject/body or calendar payload, for retry without recompute
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, type])
+  @@index([appointmentId])
+}
+
+model GoogleCalendarToken {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

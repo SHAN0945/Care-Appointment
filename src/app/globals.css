@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+/*
+ * Class-based dark mode: `dark:` utilities activate when a `.dark` class is
+ * present on <html>, not from the OS's prefers-color-scheme. A manual toggle
+ * (see ThemeToggle) sets that class and persists the choice — this avoids
+ * the earlier problem of the OS theme silently switching the page out from
+ * under components before they had matching dark styles; now every surface
+ * that matters has an explicit dark: variant, so toggling is safe either way.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --background: #0b1120;
+  --foreground: #e2e8f0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
