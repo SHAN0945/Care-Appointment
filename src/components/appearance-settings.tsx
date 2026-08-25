@@ -6,7 +6,7 @@ export function AppearanceSettings() {
   const { isDark, setIsDark } = useTheme();
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-5 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
       <h2 className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-100">Appearance</h2>
       <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">Choose how CareFlow looks on this device.</p>
       <div className="grid max-w-xs grid-cols-2 gap-3">

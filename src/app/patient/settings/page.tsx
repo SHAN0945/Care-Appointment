@@ -15,7 +15,7 @@ export default async function PatientSettingsPage({
     <AppShell role="PATIENT" email={session?.user?.email} title="Settings">
       <div className="space-y-4">
         <AppearanceSettings />
-        <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-5 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
           <h2 className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-100">Calendar sync</h2>
           <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
             Connect Google Calendar so confirmed appointments appear on your calendar automatically.

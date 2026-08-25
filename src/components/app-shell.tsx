@@ -42,9 +42,9 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950">
-      <aside className="hidden w-56 flex-shrink-0 border-r border-gray-200 bg-white sm:flex sm:flex-col dark:border-gray-800 dark:bg-gray-900">
-        <div className="flex items-center gap-2.5 border-b border-gray-200 px-5 py-5 dark:border-gray-800">
+    <div className="flex min-h-screen">
+      <aside className="hidden w-56 flex-shrink-0 border-r border-white/60 bg-white/50 backdrop-blur-xl sm:flex sm:flex-col dark:border-white/10 dark:bg-gray-900/40">
+        <div className="flex items-center gap-2.5 border-b border-white/60 px-5 py-5 dark:border-white/10">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
             C
           </span>
@@ -53,13 +53,13 @@ export function AppShell({
         <div className="flex-1 px-3 py-4">
           <SidebarNav items={NAV_ITEMS[role]} />
         </div>
-        <div className="border-t border-gray-200 px-4 py-3 dark:border-gray-800">
+        <div className="border-t border-white/60 px-4 py-3 dark:border-white/10">
           <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_STYLES[role]}`}>{role}</span>
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4 sm:hidden dark:border-gray-800 dark:bg-gray-900">
+        <header className="flex items-center justify-between border-b border-white/60 bg-white/50 px-6 py-4 backdrop-blur-xl sm:hidden dark:border-white/10 dark:bg-gray-900/40">
           <div className="flex items-center gap-2.5">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
               C
@@ -73,7 +73,7 @@ export function AppShell({
           </div>
         </header>
 
-        <header className="hidden items-center justify-end gap-2 border-b border-gray-200 bg-white px-6 py-4 sm:flex dark:border-gray-800 dark:bg-gray-900">
+        <header className="hidden items-center justify-end gap-2 border-b border-white/60 bg-white/50 px-6 py-4 backdrop-blur-xl sm:flex dark:border-white/10 dark:bg-gray-900/40">
           <ThemeToggle />
           <NotificationBell />
           {email && <span className="text-sm text-gray-500 dark:text-gray-400">{email}</span>}

@@ -91,7 +91,7 @@ export default async function Home() {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-950">
+    <div>
       <LandingHeader dashboardHref={dashboardHref} />
 
       {/* ── Hero ──────────────────────────────────────────────────────── */}
@@ -141,7 +141,7 @@ export default async function Home() {
 
           {/* Product-accurate mock preview, not a stock illustration */}
           <div className="relative">
-            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xl dark:border-gray-800 dark:bg-gray-900">
+            <div className="rounded-2xl border border-white/60 bg-white/60 backdrop-blur-xl p-5 shadow-xl dark:border-white/10 dark:bg-gray-900/50">
               <div className="mb-4 flex items-center justify-between">
                 <span className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">Next appointment</span>
                 <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">✓ Confirmed</span>
@@ -157,7 +157,7 @@ export default async function Home() {
                 <p className="text-sm text-gray-700 dark:text-gray-300">Fever and headache for two days</p>
               </div>
             </div>
-            <div className="absolute -bottom-5 -right-5 rounded-xl border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-800 dark:bg-gray-900">
+            <div className="absolute -bottom-5 -right-5 rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-3 shadow-lg dark:border-white/10 dark:bg-gray-900/50">
               <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">💊 Reminder</p>
               <p className="text-sm text-gray-700 dark:text-gray-300">Paracetamol — 8:00 PM</p>
             </div>
@@ -166,7 +166,7 @@ export default async function Home() {
       </section>
 
       {/* ── Stats strip ──────────────────────────────────────────────── */}
-      <section className="border-y border-gray-100 bg-gray-50/60 dark:border-gray-800 dark:bg-gray-900/40">
+      <section className="border-y border-white/40 bg-white/30 backdrop-blur-xl dark:border-white/10 dark:bg-gray-900/40">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-10 sm:grid-cols-4">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
@@ -185,7 +185,7 @@ export default async function Home() {
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {HOW_IT_WORKS.map((s) => (
-            <div key={s.step} className="relative rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:shadow-none">
+            <div key={s.step} className="relative rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-6 shadow-sm transition-shadow hover:shadow-md dark:border-white/10 dark:bg-gray-900/50 dark:shadow-none">
               <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-xl dark:bg-blue-900/30">{s.icon}</span>
               <p className="mb-1 text-xs font-semibold text-blue-600 dark:text-blue-400">STEP {s.step}</p>
               <p className="mb-1.5 font-semibold text-gray-900 dark:text-gray-50">{s.title}</p>
@@ -196,7 +196,7 @@ export default async function Home() {
       </section>
 
       {/* ── Specialties ──────────────────────────────────────────────── */}
-      <section id="specialties" className="bg-gray-50 py-20 dark:bg-gray-900/40">
+      <section id="specialties" className="bg-white/20 py-20 backdrop-blur-xl dark:bg-gray-900/30">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-50">Find care by specialty</h2>
@@ -207,7 +207,7 @@ export default async function Home() {
               <a
                 key={name}
                 href="/login/patient"
-                className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-blue-700 dark:shadow-none"
+                className="flex items-center gap-4 rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-white/10 dark:bg-gray-900/50 dark:hover:border-blue-700 dark:shadow-none"
               >
                 <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 text-2xl dark:bg-blue-900/30">
                   {SPECIALTY_ICONS[name] ?? "🩺"}
@@ -233,7 +233,7 @@ export default async function Home() {
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {doctors.map((doc) => (
-            <div key={doc.id} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:shadow-none">
+            <div key={doc.id} className="rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-6 shadow-sm transition-shadow hover:shadow-md dark:border-white/10 dark:bg-gray-900/50 dark:shadow-none">
               <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-2xl dark:bg-blue-900/30">
                 👩‍⚕️
               </span>
@@ -258,7 +258,7 @@ export default async function Home() {
       </section>
 
       {/* ── Features ─────────────────────────────────────────────────── */}
-      <section id="features" className="bg-gray-50 py-20 dark:bg-gray-900/40">
+      <section id="features" className="bg-white/20 py-20 backdrop-blur-xl dark:bg-gray-900/30">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-50">Why CareFlow</h2>
@@ -266,7 +266,7 @@ export default async function Home() {
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:shadow-none">
+              <div key={f.title} className="rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-6 shadow-sm dark:border-white/10 dark:bg-gray-900/50 dark:shadow-none">
                 <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-xl dark:bg-blue-900/30">{f.icon}</span>
                 <p className="mb-1.5 font-semibold text-gray-900 dark:text-gray-50">{f.title}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{f.body}</p>

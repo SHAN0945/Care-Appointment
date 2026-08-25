@@ -46,17 +46,17 @@ export default async function PatientDashboard() {
   return (
     <AppShell role="PATIENT" email={session?.user?.email} title={`${greeting()}, ${firstName}`} subtitle="Your care, all in one place.">
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <div className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-3 dark:border-white/10 dark:bg-gray-900/50">
           <p className="text-xl font-semibold text-gray-900 dark:text-gray-50">{upcomingCount}</p>
           <p className="text-xs text-gray-500 dark:text-gray-400">Upcoming</p>
         </div>
-        <div className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <div className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-3 dark:border-white/10 dark:bg-gray-900/50">
           <p className="text-xl font-semibold text-gray-900 dark:text-gray-50">{completedCount}</p>
           <p className="text-xs text-gray-500 dark:text-gray-400">Completed visits</p>
         </div>
       </div>
 
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div className="mb-6 rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-6 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
         <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Next appointment</p>
         {nextAppointment ? (
           <div className="flex items-center justify-between">
@@ -103,7 +103,7 @@ export default async function PatientDashboard() {
           <a
             key={a.href}
             href={a.href}
-            className="rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+            className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-4 transition-shadow hover:shadow-md dark:border-white/10 dark:bg-gray-900/50"
           >
             <span className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-lg dark:bg-emerald-900/30">
               {a.icon}

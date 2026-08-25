@@ -59,7 +59,7 @@ export function DoctorCard({ doctor }: { doctor: DoctorWithLeaves }) {
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-4 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
       <div className="flex items-baseline justify-between">
         <h3 className="font-medium text-gray-900 dark:text-gray-100">{doctor.user.name}</h3>
         <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
@@ -103,7 +103,7 @@ export function DoctorCard({ doctor }: { doctor: DoctorWithLeaves }) {
               required
               value={leaveDate}
               onChange={(e) => setLeaveDate(e.target.value)}
-              className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+              className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-gray-800/50 dark:text-gray-100"
             />
           </div>
           <div>
@@ -112,7 +112,7 @@ export function DoctorCard({ doctor }: { doctor: DoctorWithLeaves }) {
               id={`leave-reason-${doctor.id}`}
               value={leaveReason}
               onChange={(e) => setLeaveReason(e.target.value)}
-              className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+              className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-gray-800/50 dark:text-gray-100"
             />
           </div>
           <button

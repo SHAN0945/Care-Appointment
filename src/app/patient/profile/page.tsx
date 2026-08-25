@@ -36,7 +36,7 @@ export default async function PatientProfilePage() {
 
   return (
     <AppShell role="PATIENT" email={session?.user?.email} title="Profile">
-      <div className="mb-6 flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div className="mb-6 flex items-center gap-4 rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-6 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
         <span className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xl font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
           {initials(name)}
         </span>
@@ -46,7 +46,7 @@ export default async function PatientProfilePage() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl shadow-sm dark:border-white/10 dark:bg-gray-900/50">
         <dl className="divide-y divide-gray-100 dark:divide-gray-800">
           {rows.map((r) => (
             <div key={r.label} className="flex items-center justify-between px-5 py-4">

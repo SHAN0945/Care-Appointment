@@ -47,7 +47,7 @@ export default async function AdminDashboard() {
     <AppShell role="ADMIN" email={session?.user?.email} title="Clinic overview">
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div key={s.label} className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-4 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
             <p className="text-2xl font-semibold text-gray-900 dark:text-gray-50">{s.value}</p>
             <p className="text-sm text-gray-500 dark:text-gray-400">{s.label}</p>
           </div>
@@ -67,7 +67,7 @@ export default async function AdminDashboard() {
           <DoctorCard key={doctor.id} doctor={doctor} />
         ))}
         {doctors.length === 0 && (
-          <p className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+          <p className="rounded-lg border border-dashed border-gray-300/70 bg-white/30 backdrop-blur-xl p-8 text-center text-sm text-gray-500 dark:border-white/10 dark:bg-gray-900/30 dark:text-gray-400">
             No doctors yet — add one above.
           </p>
         )}

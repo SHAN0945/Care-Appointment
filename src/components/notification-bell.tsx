@@ -83,7 +83,7 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-10 mt-2 w-80 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <div className="absolute right-0 z-10 mt-2 w-80 rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl shadow-lg dark:border-white/10 dark:bg-gray-800/50">
           <div className="border-b border-gray-100 px-4 py-2.5 text-sm font-semibold text-gray-900 dark:border-gray-700 dark:text-gray-100">
             Recent activity
           </div>

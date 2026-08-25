@@ -1,6 +1,6 @@
 export function LandingFooter({ dashboardHref }: { dashboardHref?: string | null }) {
   return (
-    <footer className="border-t border-gray-100 bg-white dark:border-gray-800 dark:bg-gray-950">
+    <footer className="border-t border-white/40 bg-white/30 backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/60">
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
           <div>

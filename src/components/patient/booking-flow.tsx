@@ -194,7 +194,7 @@ export function BookingFlow({ initialDoctors }: { initialDoctors: Doctor[] }) {
       <Stepper steps={STEPS} currentIndex={stepIndex} />
 
       {step === "done" ? (
-        <div className="rounded-xl border border-gray-200 bg-white py-16 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div className="rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl py-16 text-center shadow-sm dark:border-white/10 dark:bg-gray-900/50">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-2xl text-green-700 dark:bg-green-900/40 dark:text-green-400">
             ✓
           </div>
@@ -266,7 +266,7 @@ export function BookingFlow({ initialDoctors }: { initialDoctors: Doctor[] }) {
               placeholder="Search by specialization (e.g. Cardiology)"
               value={specialization}
               onChange={(e) => setSpecialization(e.target.value)}
-              className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+              className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-gray-800/50 dark:text-gray-100"
             />
             <button
               type="submit"
@@ -283,7 +283,7 @@ export function BookingFlow({ initialDoctors }: { initialDoctors: Doctor[] }) {
               {doctors.map((doc) => {
                 const expanded = selectedDoctor?.id === doc.id && step === "slots";
                 return (
-                  <div key={doc.id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                  <div key={doc.id} className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-4 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
                     <button
                       type="button"
                       onClick={() => selectDoctor(doc)}
@@ -346,7 +346,7 @@ export function BookingFlow({ initialDoctors }: { initialDoctors: Doctor[] }) {
                 );
               })}
               {doctors.length === 0 && (
-                <p className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+                <p className="rounded-lg border border-dashed border-gray-300/70 bg-white/30 backdrop-blur-xl p-8 text-center text-sm text-gray-500 dark:border-white/10 dark:bg-gray-900/30 dark:text-gray-400">
                   No doctors found.
                 </p>
               )}
@@ -367,7 +367,7 @@ export function BookingFlow({ initialDoctors }: { initialDoctors: Doctor[] }) {
             )}
           </div>
 
-          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-6 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
             <h2 className="mb-1 text-xl font-semibold text-gray-900 dark:text-gray-50">Tell us what's going on</h2>
             <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">
               Our AI will prepare an urgency triage and suggested questions for your doctor before you arrive.
@@ -399,7 +399,7 @@ export function BookingFlow({ initialDoctors }: { initialDoctors: Doctor[] }) {
                   maxLength={4000}
                   value={symptoms}
                   onChange={(e) => setSymptoms(e.target.value)}
-                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-gray-800/50 dark:text-gray-100"
                   placeholder="What's been going on? When did it start? Anything that makes it better or worse?"
                 />
                 <p className="mt-1 text-right text-xs text-gray-400 dark:text-gray-500">{symptoms.length}/4000</p>

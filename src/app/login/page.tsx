@@ -32,7 +32,7 @@ function PortalChooser({ callbackUrl }: { callbackUrl?: string }) {
   const qs = callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : "";
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-gray-50 px-4 py-16 dark:bg-gray-950">
+    <div className="relative flex min-h-screen items-center justify-center px-4 py-16">
       <div className="absolute right-4 top-4">
         <ThemeToggle />
       </div>
@@ -49,7 +49,7 @@ function PortalChooser({ callbackUrl }: { callbackUrl?: string }) {
             <a
               key={p.role}
               href={`/login/${p.role}${qs}`}
-              className={`rounded-xl border bg-white p-6 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:bg-gray-900 dark:shadow-none ${p.accent}`}
+              className={`rounded-xl border bg-white/60 p-6 text-left shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:shadow-md dark:bg-gray-900/50 dark:shadow-none ${p.accent}`}
             >
               <span className={`mb-3 flex h-11 w-11 items-center justify-center rounded-lg text-xl ${p.iconBg}`}>
                 {p.icon}

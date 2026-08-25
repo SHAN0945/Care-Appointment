@@ -48,7 +48,7 @@ export function AppointmentList({ appointments }: { appointments: Appointment[] 
 
   if (appointments.length === 0) {
     return (
-      <p className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+      <p className="rounded-lg border border-dashed border-gray-300/70 bg-white/30 backdrop-blur-xl p-8 text-center text-sm text-gray-500 dark:border-white/10 dark:bg-gray-900/30 dark:text-gray-400">
         No appointments yet — book one to get started.
       </p>
     );
@@ -57,7 +57,7 @@ export function AppointmentList({ appointments }: { appointments: Appointment[] 
   return (
     <div className="space-y-3">
       {appointments.map((a) => (
-        <div key={a.id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div key={a.id} className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-4 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
           <div className="flex items-start justify-between">
             <div>
               <p className="font-medium text-gray-900 dark:text-gray-100">

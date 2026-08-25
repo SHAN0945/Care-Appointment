@@ -74,7 +74,7 @@ export function SymptomCheckerForm() {
         whether — and how urgently — to see a doctor. Always book an appointment for anything that concerns you.
       </div>
 
-      <form onSubmit={handleSubmit} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <form onSubmit={handleSubmit} className="rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-6 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
         <h2 className="mb-1 text-lg font-semibold text-gray-900 dark:text-gray-50">Describe your symptoms</h2>
         <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
           Type freely, or tap symptoms below to add them. The more detail, the better the result.
@@ -120,7 +120,7 @@ export function SymptomCheckerForm() {
           value={symptoms}
           onChange={(e) => setSymptoms(e.target.value)}
           placeholder="e.g. Sore throat and fever for 2 days, painful to swallow, feeling very tired..."
-          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-gray-800/50 dark:text-gray-100"
         />
         <p className="mt-1 text-right text-xs text-gray-400 dark:text-gray-500">{symptoms.length}/4000</p>
 
@@ -138,7 +138,7 @@ export function SymptomCheckerForm() {
       </form>
 
       {result && (
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div className="rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-6 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">Results</h2>
             <span className="text-xs text-gray-400 dark:text-gray-500">{sourceLabel(result.source)}</span>

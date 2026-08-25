@@ -29,9 +29,31 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/*
+ * Glassmorphic design language: a soft, fixed color-mesh sits behind every
+ * page so the translucent `backdrop-blur` cards throughout the app (see the
+ * card-pattern sweep across components) have something colorful to actually
+ * blur — flat white behind a translucent white card is visually a no-op.
+ * `background-attachment: fixed` keeps the mesh stationary through scrolling
+ * rather than tiling/moving with content.
+ */
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image:
+    radial-gradient(at 10% 8%, rgb(59 130 246 / 0.14) 0px, transparent 45%),
+    radial-gradient(at 90% 12%, rgb(16 185 129 / 0.12) 0px, transparent 45%),
+    radial-gradient(at 45% 55%, rgb(168 85 247 / 0.08) 0px, transparent 55%),
+    radial-gradient(at 92% 92%, rgb(236 72 153 / 0.07) 0px, transparent 45%),
+    radial-gradient(at 8% 92%, rgb(14 165 233 / 0.1) 0px, transparent 45%);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:root.dark body {
+  background-image:
+    radial-gradient(at 10% 8%, rgb(59 130 246 / 0.1) 0px, transparent 45%),
+    radial-gradient(at 90% 12%, rgb(16 185 129 / 0.08) 0px, transparent 45%),
+    radial-gradient(at 45% 55%, rgb(168 85 247 / 0.06) 0px, transparent 55%);
 }

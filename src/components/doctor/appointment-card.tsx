@@ -74,7 +74,7 @@ export function DoctorAppointmentCard({ appointment }: { appointment: DoctorAppo
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-lg border border-white/60 bg-white/60 backdrop-blur-xl p-4 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
       <div className="flex items-start justify-between">
         <div>
           <p className="font-medium text-gray-900 dark:text-gray-100">{appointment.patient.user.name}</p>
@@ -155,7 +155,7 @@ export function DoctorAppointmentCard({ appointment }: { appointment: DoctorAppo
               placeholder="Clinical notes"
               value={doctorNotes}
               onChange={(e) => setDoctorNotes(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-gray-800/50 dark:text-gray-100"
             />
             <textarea
               required
@@ -164,7 +164,7 @@ export function DoctorAppointmentCard({ appointment }: { appointment: DoctorAppo
               placeholder="Prescription (medication, dosage, frequency, duration)"
               value={prescription}
               onChange={(e) => setPrescription(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-gray-800/50 dark:text-gray-100"
             />
             {error && (
               <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-300">{error}</p>

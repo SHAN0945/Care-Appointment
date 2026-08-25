@@ -26,6 +26,7 @@ const THEME: Record<
     ring: "focus:border-emerald-500 focus:ring-emerald-500",
     icon: "🩺",
     blurb: "Book appointments, share symptoms, and track your care.",
+    demo: { email: "qwerty@gm.com", password: "QWERTY11" },
   },
   DOCTOR: {
     label: "Doctor Portal",
@@ -87,7 +88,7 @@ function Form({ role }: { role: Role }) {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-gray-50 px-4 py-16 dark:bg-gray-950">
+    <div className="relative flex min-h-screen items-center justify-center px-4 py-16">
       <div className="absolute right-4 top-4">
         <ThemeToggle />
       </div>
@@ -103,7 +104,7 @@ function Form({ role }: { role: Role }) {
         </div>
 
         {theme.demo && (
-          <div className="mb-4 rounded-lg border border-dashed border-gray-300 bg-white p-3 text-sm dark:border-gray-700 dark:bg-gray-900">
+          <div className="mb-4 rounded-lg border border-dashed border-gray-300/70 bg-white/30 backdrop-blur-xl p-3 text-sm dark:border-white/10 dark:bg-gray-900/30">
             <div className="flex items-center justify-between gap-2">
               <div>
                 <p className="font-medium text-gray-900 dark:text-gray-100">Demo {theme.label.replace(" Portal", "").toLowerCase()} login</p>
@@ -125,7 +126,7 @@ function Form({ role }: { role: Role }) {
           </div>
         )}
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div className="rounded-xl border border-white/60 bg-white/60 backdrop-blur-xl p-6 shadow-sm dark:border-white/10 dark:bg-gray-900/50">
           <h1 className="mb-1 text-xl font-semibold text-gray-900 dark:text-gray-50">Sign in</h1>
           <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">{theme.blurb}</p>
           <form onSubmit={onSubmit} className="space-y-4">
@@ -139,7 +140,7 @@ function Form({ role }: { role: Role }) {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 ${theme.ring}`}
+                className={`w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 dark:border-white/10 dark:bg-gray-800/50 dark:text-gray-100 ${theme.ring}`}
               />
             </div>
             <div>
@@ -151,7 +152,7 @@ function Form({ role }: { role: Role }) {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 ${theme.ring}`}
+                className={`w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 dark:border-white/10 dark:bg-gray-800/50 dark:text-gray-100 ${theme.ring}`}
               />
             </div>
             {error && <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-300">{error}</p>}
