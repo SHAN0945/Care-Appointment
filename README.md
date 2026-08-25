@@ -21,14 +21,6 @@ npm run dev
 
 Open http://localhost:3000. Sign in as the seeded admin, or register a new patient account at `/register`.
 
-### Running the background jobs locally
-
-The four cron routes (`/api/cron/sweep-holds`, `/api/cron/process-notifications`, `/api/cron/appointment-reminders`, `/api/cron/medication-reminders`) are plain `GET` routes protected by `CRON_SECRET` — call them directly to test without waiting for a schedule:
-
-```bash
-curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/process-notifications
-```
-
 ## Demo credentials
 
 Same password across one pre-seeded account per role, so evaluating all three portals doesn't need separate passwords. These are three separate accounts, not one account with three roles — every account has exactly one role by design (see [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md)).
@@ -38,6 +30,15 @@ Same password across one pre-seeded account per role, so evaluating all three po
 | Patient | `/login/patient` | qwerty@gm.com | QWERTY11 |
 | Doctor | `/login/doctor` | priya.sharma@clinic.test | QWERTY11 |
 | Admin | `/login/admin` | admin@clinic.test | QWERTY11 |
+### Running the background jobs locally
+
+The four cron routes (`/api/cron/sweep-holds`, `/api/cron/process-notifications`, `/api/cron/appointment-reminders`, `/api/cron/medication-reminders`) are plain `GET` routes protected by `CRON_SECRET` — call them directly to test without waiting for a schedule:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/process-notifications
+```
+
+
 
 ## App structure
 
