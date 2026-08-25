@@ -49,3 +49,8 @@ next-env.d.ts
 
 # packaged deliverable zip - regenerate with: git archive --format=zip -o CareFlow-source.zip HEAD
 CareFlow-source.zip
+
+# AI coding assistant scaffolding - not part of the app; AGENTS.md is
+# regenerated automatically by `next dev` if it runs again locally
+AGENTS.md
+CLAUDE.md
