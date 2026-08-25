@@ -5,7 +5,29 @@ A clinic appointment platform with separate patient, doctor, and admin portals: 
 **Live app:** https://care-appointment-ecru.vercel.app/ 
 
 **System design write-up:** [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) — double-booking prevention, slot hold mechanism, doctor leave conflict handling, notification failure handling.
-**Build log / phase-by-phase status:** [PROGRESS.md](PROGRESS.md)
+
+## Setup guide
+
+```bash
+git clone <repo-url>
+cd Care-Appointment-main
+npm install
+cp .env.example .env    # fill in at least DATABASE_URL/DIRECT_URL to run migrations
+npx prisma migrate deploy
+npx prisma db seed             # bootstraps the admin account from ADMIN_EMAIL/ADMIN_PASSWORD
+npx tsx prisma/seed-doctors.ts # optional: 3 demo doctors so booking has real data to try
+npm run dev
+```
+
+Open http://localhost:3000. Sign in as the seeded admin, or register a new patient account at `/register`.
+
+### Running the background jobs locally
+
+The four cron routes (`/api/cron/sweep-holds`, `/api/cron/process-notifications`, `/api/cron/appointment-reminders`, `/api/cron/medication-reminders`) are plain `GET` routes protected by `CRON_SECRET` — call them directly to test without waiting for a schedule:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/process-notifications
+```
 
 ## Demo credentials
 
@@ -16,6 +38,15 @@ Same password across one pre-seeded account per role, so evaluating all three po
 | Patient | `/login/patient` | qwerty@gm.com | QWERTY11 |
 | Doctor | `/login/doctor` | priya.sharma@clinic.test | QWERTY11 |
 | Admin | `/login/admin` | admin@clinic.test | QWERTY11 |
+### Running the background jobs locally
+
+The four cron routes (`/api/cron/sweep-holds`, `/api/cron/process-notifications`, `/api/cron/appointment-reminders`, `/api/cron/medication-reminders`) are plain `GET` routes protected by `CRON_SECRET` — call them directly to test without waiting for a schedule:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/process-notifications
+```
+
+
 
 ## App structure
 
