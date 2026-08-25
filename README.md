@@ -2,7 +2,7 @@
 
 A clinic appointment platform with separate patient, doctor, and admin portals: symptom intake with AI pre-visit summaries, post-visit AI patient summaries, medication reminders, email notifications, and Google Calendar sync.
 
-**Live app:** https://healthcare-appointment-manager-three.vercel.app
+**Live app:** https://care-appointment-ecru.vercel.app/ 
 
 **System design write-up:** [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) — double-booking prevention, slot hold mechanism, doctor leave conflict handling, notification failure handling.
 **Build log / phase-by-phase status:** [PROGRESS.md](PROGRESS.md)
@@ -44,7 +44,7 @@ Every page supports light and dark mode — toggle in the header, or a full Ligh
 
 ```bash
 git clone <repo-url>
-cd healthcare-appointment-manager
+cd Care-Appointment-main
 npm install
 cp .env.example .env    # fill in at least DATABASE_URL/DIRECT_URL to run migrations
 npx prisma migrate deploy
