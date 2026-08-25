@@ -44,7 +44,7 @@ Every page supports light and dark mode — toggle in the header, or a full Ligh
 
 ```bash
 git clone <repo-url>
-cd healthcare-appointment-manager
+cd Care-Appointment-main
 npm install
 cp .env.example .env    # fill in at least DATABASE_URL/DIRECT_URL to run migrations
 npx prisma migrate deploy
