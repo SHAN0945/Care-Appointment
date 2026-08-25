@@ -2,6 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { workingHoursSchema } from "../src/lib/working-hours";
 
+// This script is meant to be run directly (`npx tsx prisma/seed-doctors.ts`),
+// unlike seed.ts which goes through `prisma db seed` — so nothing auto-loads
+// .env for it. Node's own built-in loader covers that (zero dependencies).
+try {
+  process.loadEnvFile();
+} catch {}
+
 const prisma = new PrismaClient();
 
 // Demo/test doctor accounts — mirrors exactly what POST /api/admin/doctors

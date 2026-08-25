@@ -1,6 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
+// `prisma db seed` loads .env itself before invoking this script, but running
+// it directly (`npx tsx prisma/seed.ts`) does not — Node's own built-in
+// loader (no dependency needed) covers that case too. Wrapped in try/catch
+// since it throws if .env doesn't exist, which is fine (env vars may already
+// be set another way, e.g. in CI or Vercel).
+try {
+  process.loadEnvFile();
+} catch {}
+
 const prisma = new PrismaClient();
 
 // Bootstraps the single admin account from env vars. Run with:
